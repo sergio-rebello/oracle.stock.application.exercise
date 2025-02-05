@@ -1,0 +1,5 @@
+Como alternativa ao alocamento dos 1000 ficheiros, utilizei um armazenamento em clob em uma tabela secundária.
+O package com a procedure que realiza tanto a criação dos ficheiros csv é o FILE_LOC_CSV_PKG.
+com um volume de 380.000 linhas na item_loc_soh, tempo de 0,66 segundos na execução do package item_loc_pkg para popular a item_loc_soh_history, o tempo que o FILE_LOC_CSV_PKG
+leva para executar os 1000 ficheiros é de 4,04 segundos.
+As imagens juntas a pasta mostram os prints dessas execuções/counts.
