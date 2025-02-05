@@ -1,0 +1,27 @@
+--
+-- É possível utilizar a criação de um índice para melhorar o desepenho e tornar mais eficiente, evitando a necessidade de um TABLE ACCESS FULL.
+--
+--
+-- Solução em SQL
+--
+                                                    CREATE INDEX idx_item_loc_soh_loc_dept ON ITEM_LOC_SOH(LOC, DEPT);
+--
+--
+--
+-- Com o índice criado, o Plano de Execução deve mudar para algo como:
+--
+/*
+                                     Plan Hash Value  : 1234567890 
+                                     
+                                     -----------------------------------------------------------------------------------------------------
+                                     | Id  | Operation                   | Name                      | Rows | Bytes | Cost  | Time       |
+                                     -----------------------------------------------------------------------------------------------------
+                                     |   0 | SELECT STATEMENT            |                           | 100  | 400   | 10    | 00:00:01   |
+                                     |   1 | TABLE ACCESS BY INDEX ROWID | ITEM_LOC_SOH              | 100  | 400   | 10    | 00:00:01   |
+                                     | * 2 | INDEX RANGE SCAN            | idx_item_loc_soh_loc_dept | 100  |       | 5     | 00:00:01   |
+                                     -----------------------------------------------------------------------------------------------------
+                                     Predicate Information (identified by operation id):
+                                     ---------------------------------------------------
+                                     * 2 - access("LOC"=652 AND "DEPT"=68)
+*/
+--

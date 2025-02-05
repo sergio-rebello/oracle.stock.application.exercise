@@ -1,0 +1,46 @@
+Com base no relatório AWR fornecido, os principais problemas identificados são:
+
+1. Espera Excessiva por CPU (resmgr:cpu quantum)
+
+    O evento de espera mais significativo é resmgr:cpu quantum, que representa 83.1% do tempo total do banco de dados.
+    Isso indica que as sessões estão sendo restringidas pelo Resource Manager, provavelmente devido a limites impostos no uso de CPU.
+
+Possíveis Soluções:
+
+    Identificar e otimizar queries pesadas, reduzindo o tempo de execução e, consequentemente, o uso de CPU.
+    Verificar as políticas do Resource Manager e ajustar os planos de consumo de CPU se necessário.
+    Aumentar a alocação de CPU para o banco de dados se houver recursos disponíveis no servidor.
+
+2. Alto Tempo de CPU (DB CPU)
+
+    DB CPU é responsável por 15.8% do tempo total do banco de dados, indicando alta utilização de CPU pelos processos do banco de dados.
+
+Possíveis Soluções:
+
+    Revisar SQLs de alto consumo de CPU no relatório de estatísticas de SQL e otimizar consultas ineficientes.
+    Implementar índices adequados para reduzir leituras desnecessárias.
+    Utilizar hints ou técnicas de tuning para otimizar o plano de execução das queries.
+
+3. Elevado Número de Leituras Lógicas
+
+    O número de leituras lógicas (Logical Reads) é 1.192.182,9 blocos por segundo, o que pode indicar queries mal otimizadas ou acesso excessivo aos dados em cache.
+
+Possíveis Soluções:
+
+    Revisar o uso do cache e otimizar a estrutura dos índices para minimizar leituras desnecessárias.
+    Avaliar a necessidade de partições em tabelas grandes para melhorar a eficiência das consultas.
+
+4. Eventos de Espera Relacionados a Conflitos de Cursor
+
+    Há ocorrência do evento cursor: pin S wait on X, indicando possíveis conflitos de cursor ao executar SQLs.
+
+Possíveis Soluções:
+
+    Reduzir hard parses melhorando o compartilhamento de cursores (uso de bind variables).
+    Ajustar o tamanho da shared pool para evitar contenção excessiva.
+
+Conclusão
+
+O principal gargalo identificado no AWR é a espera por CPU devido ao Resource Manager (resmgr:cpu quantum), além de alto consumo de CPU (DB CPU).
+É válido revisar e otimizar queries pesadas, ajustar os parâmetros do Resource Manager e avaliar a necessidade de reconfiguração da infraestrutura
+para evitar restrições no uso de CPU.
