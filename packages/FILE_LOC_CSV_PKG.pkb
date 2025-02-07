@@ -13,9 +13,30 @@ CREATE OR REPLACE PACKAGE BODY file_loc_csv_pkg AS
               v_stock_on_hand NUMBER(12,4);
               v_stock_value   NUMBER(20,4);
               v_csv_line      VARCHAR2(4000);
+    --
+    -- Cursor para obter as localizações distintas
+    --
+    CURSOR c_locations IS
+        --
+        SELECT DISTINCT loc
+          FROM item_loc_soh;
+        --
+    --
+    -- Cursor para obter os dados de cada localização
+    --
+    CURSOR c_item_data(p_location NUMBER) IS
+        --
+        SELECT item,
+               dept,
+               unit_cost,
+               stock_on_hand,
+               unit_cost * stock_on_hand AS stock_value
+          FROM item_loc_soh
+         WHERE loc = p_location;
+         --
     BEGIN
         --
-        FOR r IN (SELECT DISTINCT loc FROM item_loc_soh) LOOP
+        FOR r IN c_locations LOOP
             v_location := r.loc;
             --
             DBMS_LOB.createtemporary(v_clob, TRUE);
@@ -23,14 +44,7 @@ CREATE OR REPLACE PACKAGE BODY file_loc_csv_pkg AS
             v_csv_line := 'Item,Dept,Unit_Cost,Stock_On_Hand,Stock_Value';
             DBMS_LOB.writeappend(v_clob, LENGTH(v_csv_line), v_csv_line);
             --
-            FOR data IN (SELECT item,
-                                dept,
-                                unit_cost,
-                                stock_on_hand,
-                                unit_cost * stock_on_hand AS stock_value
-                           FROM item_loc_soh
-                          WHERE loc = v_location
-                         ) LOOP
+            FOR data IN c_item_data(v_location) LOOP
                 --
                 v_item          := data.item;
                 v_dept          := data.dept;
