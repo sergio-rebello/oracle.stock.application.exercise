@@ -10,6 +10,6 @@
          ils.stock_on_hand, 
          ils.unit_cost * ils.stock_on_hand AS stock_value
     FROM item_loc_soh ils
-   WHERE ils.dept IN (SELECT *
+   WHERE ils.dept IN (SELECT dept
                         FROM TABLE(get_user_depts())
                      );
