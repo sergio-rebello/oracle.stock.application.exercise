@@ -18,8 +18,9 @@ CREATE OR REPLACE PACKAGE BODY file_loc_csv_pkg AS
     --
     CURSOR c_locations IS
         --
-        SELECT DISTINCT loc
-          FROM item_loc_soh;
+        SELECT loc
+          FROM item_loc_soh
+         GROUP BY loc;
         --
     --
     -- Cursor para obter os dados de cada localização
